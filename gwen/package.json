@@ -1,0 +1,15 @@
+{
+  "name": "gwendock",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "gwen": "gwen",
+	"gwen:selenoid": "gwen -b -c browsers/selenoid.conf samples"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@gweninterpreter/gwen-web": "^1.2.0"
+  }
+}

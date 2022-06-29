@@ -1,0 +1,59 @@
+version: '3.5'
+services:
+  chrome:
+    image: selenoid/chrome:latest
+    networks:
+      - gwen-net
+  firefox:
+    image: selenoid/firefox:latest
+    networks:
+      - gwen-net
+  edge:
+    image: browsers/edge:latest
+    networks:
+      - gwen-net
+  video-recorder:
+    image: selenoid/video-recorder:latest-release
+    networks:
+      - gwen-net
+  selenoid:
+    depends_on:
+      - chrome
+      - firefox
+      - edge
+      - video-recorder
+    image: aerokube/selenoid:latest-release
+    networks:
+      - gwen-net
+    ports:
+      - "4444:4444"
+    volumes:
+      - "C://Users/mmiraflores/Documents/GwenStuffs/GwenProjects/GwenDock/gwen/browsers:/etc/selenoid/:ro"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "C://Users/mmiraflores/Documents/GwenStuffs/GwenProjects/GwenDock/gwen/output/.video:/opt/selenoid/video"
+    environment:
+      - GWEN_VIDEO=true
+      - OVERRIDE_VIDEO_OUTPUT_DIR=C://Users/mmiraflores/Documents/GwenStuffs/GwenProjects/GwenDock/gwen/output/.video
+    command: ["-container-network", "gwen-net", "-video-output-dir", "/opt/selenoid/video"]
+  gwen:
+    depends_on:
+      - selenoid
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - SELENIUM_HUB=selenoid
+      - NO_COLOR=1
+      - GWEN_BROWSER
+      - GWEN_DRY_RUN
+      - GWEN_PARALLEL
+      - GWEN_HEADLESS
+    volumes:
+      - ".:/GwenDock"
+    working_dir: /GwenDock
+    command: bash -c "yarn install && yarn gwen:selenoid"
+    networks:
+      - gwen-net
+networks:
+  gwen-net:
+    name: gwen-net

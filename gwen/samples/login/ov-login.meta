@@ -1,0 +1,27 @@
+Feature: Login meta
+ @Context
+ @StepDef
+ Scenario: I go to OneView page
+	Given I start a new browser
+     When I navigate to "http://172.31.26.44:8080/OACredit/login"
+     Then the page title should be "Welcome to OneView"
+
+	
+ @StepDef
+ @Action
+ Scenario: I login with correct credentials
+    Given I am on the login page
+	And the login button can be located by id "proceed"
+	And user field can be located by id "j_username"
+	And password field can be located by id "j_password"
+	When I type "mmiraflores" in user field
+	And  I type "P@ssw0rd321" in password field
+	And  I click the login button
+   
+	
+ @StepDef
+ @Assertion
+ Scenario: I should be able to proceed on dashboard page
+    Given I capture the current URL as pageurl
+    Then pageurl should contain "dashboard"
+	
